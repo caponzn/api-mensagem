@@ -1,52 +1,55 @@
 import {fastify} from 'fastify';
 // import {DatabaseMemory} from './database-memory.js';
-import { DatabasePostgres } from './database-postgres.js';
+import { DatabasePostgres } from './database/database-postgres.js';
 
 const server = fastify();
 // const database = new DatabaseMemory();
 const database = new DatabasePostgres();
 
 
-//http://localhost:3333/mensagem
-server.get('/mensagem', async (req, reply) =>{
+//rota de exibição das contas
+server.get('/contas', async (req, reply) =>{
     const search = req.query.search
-   console.log(search)
-    const mensagem = await database.list(search)
+    const conta = await database.list(search)
     
-    return mensagem;
+    return conta;
 });
-//http://localhost:3333/mensagem
-server.post('/mensagem',async (req, reply) =>{
-    const { titulo, descricao} = req.body;
+//rota de criação das contas
+server.post('/contas',async (req, reply) =>{
+    const { titulo, descricao, valor, id_User} = req.body;
 
     await database.create({
         titulo,
         descricao,
+        valor,
+        id_User
     })
     
     return reply.status(201).send();
 });
-//http://localhost:3333/mensagem/3
-server.put('/mensagem/:id', async (req, reply) =>{
-    const mensagemId = req.params.id;
-    const { titulo, descricao} = req.body;
+//rota de modificação das contas
+server.put('/contas/:id', async (req, reply) =>{
+    const contaID = req.params.id;
+    const { titulo, descricao, valor, id_User} = req.body;
 
-    await database.updade(mensagemId, {
+    await database.updade(contaID, {
         titulo,
         descricao,
+        valor,
+        id_User
     });
     return reply.status(204).send;
 });
-//http://localhost:3333/mensagem/3
-server.delete('/mensagem/:id', async (req, reply) =>{
-    const mensagemId = req.params.id;
+//rota de exclusão das contas
+server.delete('/contas/:id', async (req, reply) =>{
+    const contaID = req.params.id;
 
-    await database.delete(mensagemId);
+    await database.delete(contaID);
 
     return reply.status(204).send();
 });
 
 server.listen({
-    host: '0.0.0.0',
+    host: process.env.HOST ?? '0.0.0.0',
     port: process.env.PORT ?? 3333,
 });

@@ -1,7 +1,7 @@
 {
-  "name": "aula-projeto",
+  "name": "api-contas",
   "version": "1.0.0",
-  "description": "",
+  "description": "Api de gestao de contas",
   "main": "server.js",
   "type": "module",
   "scripts": {
